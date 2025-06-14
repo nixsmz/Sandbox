@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+    <title>Clock</title>
+    <style>
+      :focus { outline: none }
+      * {
+        user-select: none;
+        cursor: default;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        height: 100dvh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #404040;
+      }
+      svg.clock {
+        background-color: #202020;
+        position: relative;
+        border-radius: 50%;
+        width: min(80vw, 80vh);
+        height: min(80vw, 80vh);
+        transition: 0.2s ease-in-out;
+        &:hover {
+          scale: 1.05;
+          box-shadow: 0 0 min(2vw, 2vh) min(1vw, 1vh) #202020;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <svg id="clock" class="clock" width="200" height="200" viewBox="0 0 200 200">
+      <g class="hour" stroke="#ffffff" stroke-width="8">
+        <path d="M100,52 V100" stroke-linecap="round"/>
+      </g>
+      <g class="min" stroke="#ffffff" stroke-width="4">
+        <path d="M100,27 V100" stroke-linecap="round"/>
+      </g>
+      <g class="sec" stroke="#00cdff" stroke-width="4">
+        <circle cx="100" cy="100" r="4" fill="#00cdff" />
+        <path d="M100,12 V100" stroke-linecap="round"/>
+      </g>
+    </svg>
+    <script>
+      const clock = document.getElementById('clock');
+
+      Array.from({ length: 12 }, (_, i) => {
+        const angle = (i) * 30 * (Math.PI / 180);
+        const cx = 100 + 85 * Math.cos(angle);
+        const cy = 100 + 85 * Math.sin(angle);
+        clock.innerHTML = `<circle cx="${cx}" cy="${cy}" r="4" fill="white"/>` + clock.innerHTML;
+      });
+
+      function updateTime(clk) {
+        const now = new Date();
+        const sec = now.getSeconds(), min = now.getMinutes(), hours = now.getHours();
+        clk.querySelector('g.sec').setAttribute('transform', `rotate(${sec*6},100,100)`);
+        clk.querySelector('g.min').setAttribute('transform', `rotate(${(min + sec/60)*6},100,100)`);
+        clk.querySelector('g.hour').setAttribute('transform', `rotate(${(hours + min/60)*30},100,100)`);
+      }
+
+      updateTime(clock);
+      setInterval(() => { updateTime(clock) }, 1000);
+    </script>
+  </body>
+</html>
